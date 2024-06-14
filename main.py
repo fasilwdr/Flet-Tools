@@ -21,7 +21,7 @@ class SampleRod(ft.BarChartRod):
         self.tooltip = str(self.y)
         self.width = 22
         self.color = ft.colors.WHITE
-        self.bg_to_y = 50
+        self.bg_to_y = 20
         self.bg_color = "#5a6400"
 
 
