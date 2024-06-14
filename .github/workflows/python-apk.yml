@@ -33,7 +33,7 @@ jobs:
 
     - name: Build with Flet
       run: |
-        flet build apk Test --product Test
+        flet build apk --product Test
 
     - name: Create Release
       uses: actions/upload-artifact@v2
