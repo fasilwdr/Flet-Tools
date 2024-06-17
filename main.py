@@ -2,12 +2,11 @@ import json
 import urllib.request
 import urllib.error
 import flet as ft
-from templates import SampleRod, SummaryCard, TaskCard, TaskCardDetail, UserError
+from templates import SampleRod, TaskCard, TaskCardDetail, UserError
 from colors import PRIMARY, PRIMARY_CONTAINER, ON_PRIMARY_CONTAINER, SECONDARY, SECONDARY_CONTAINER, \
     ON_SECONDARY_CONTAINER, TERTIARY, TERTIARY_CONTAINER, ON_TERTIARY_CONTAINER, BACKGROUND, GREY_DARK, WHITE_CONTAINER, \
     GREY_CONTAINER, GREY_OUTLINE
 from pyodoo_connect import Odoo
-from flet_contrib.shimmer import Shimmer
 
 
 def navigation_bar_route_changes(e):
