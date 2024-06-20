@@ -1,44 +1,68 @@
 import flet as ft
+import sqlite3
 
+query = """
+CREATE TABLE IF NOT EXISTS notes (
+    id INTEGER PRIMARY KEY,
+    note TEXT
+);
+"""
+conn = sqlite3.connect('data.db')
+cursor = conn.cursor()
+cursor.execute(query)
+conn.commit()
+conn.close()
 
 # Define the main function for Flet
 def main(page: ft.Page):
     page.title = "Notes App"
     page.theme_mode = ft.ThemeMode.LIGHT
-    notes = []
 
     # Refresh all notes from the database
     def sync_notes():
-        notes_controls.controls.clear()
-        for note in notes:
-            notes_controls.controls.append(
+        conn = sqlite3.connect('data.db')
+        cursor = conn.cursor()
+        cursor.execute("SELECT id, note FROM notes")
+        all_notes = cursor.fetchall()
+        notes.controls.clear()
+        for note_id, note_text in all_notes:
+            notes.controls.append(
                 ft.Row(
                     alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
                     controls=[
-                        ft.Text(note, width=300),
-                        ft.IconButton(icon=ft.icons.DELETE, data=note, on_click=delete_note),
+                        ft.Text(note_text, width=300),
+                        ft.IconButton(icon=ft.icons.DELETE, on_click=lambda e, note_id=note_id: delete_note(note_id)),
                     ]
                 )
             )
-        notes_controls.update()
+        notes.update()
+        conn.close()
 
     # Add a new note to the database and refresh the list
     def add_note(e):
         note_text = new_note.value
-        notes.append(note_text)
         if note_text:  # Only add if there's something to add
+            conn = sqlite3.connect('data.db')
+            cursor = conn.cursor()
+            cursor.execute("INSERT INTO notes (note) VALUES (?)", (note_text,))
+            conn.commit()
+            conn.close()
             new_note.value = ""
             new_note.update()
             sync_notes()
 
     # Delete a note from the database and refresh the list
-    def delete_note(e):
-        notes.remove(e.control.data)
+    def delete_note(note_id):
+        conn = sqlite3.connect('data.db')
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM notes WHERE id = ?", (note_id,))
+        conn.commit()
+        conn.close()
         sync_notes()
 
     # Define Flet UI components
     new_note = ft.TextField(hint_text="Enter new note", width=300)
-    notes_controls = ft.Column()
+    notes = ft.Column()
 
     # Add components to the page
     page.add(
@@ -50,7 +74,7 @@ def main(page: ft.Page):
             alignment=ft.MainAxisAlignment.CENTER,
             vertical_alignment=ft.CrossAxisAlignment.CENTER,
         ),
-        notes_controls
+        notes
     )
 
     # Initial sync of notes

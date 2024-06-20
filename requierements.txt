@@ -1,2 +1,1 @@
-flet==0.22.0
-typing-extensions
+flet
