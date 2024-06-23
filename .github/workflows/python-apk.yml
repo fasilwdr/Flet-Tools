@@ -33,6 +33,7 @@ jobs:
 
     - name: Build with Flet
       run: |
+        rm -rf ~/.cookiecutters
         flet build apk --product Test --description Test
 
     - name: Create Release
